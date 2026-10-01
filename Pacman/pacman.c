@@ -41,10 +41,6 @@ bool jogo_rodando = true;
 int jog_dir_x = 0;
 int jog_dir_y = 0;
 
-// ============================================================================
-// FUNÇÕES DE TERMINAL (LINUX)
-// ============================================================================
-
 char ler_tecla() {
     char ch = 0;
     struct termios oldt, newt;
@@ -61,10 +57,6 @@ void limpar_tela() {
     system("clear"); 
 }
 
-// ============================================================================
-// GERENCIAMENTO DE MAPA E ARQUIVOS
-// ============================================================================
-
 void liberar_mapa() {
     for (int i = 0; i < m.linhas; i++) free(m.grade[i]);
     free(m.grade);
@@ -72,7 +64,6 @@ void liberar_mapa() {
 
 void carregar_mapa() {
     srand(time(NULL));
-    // Sorteio dinâmico atualizado para 5 mapas
     int num_mapa = (rand() % 5) + 1; 
     char nome_arquivo[20];
     sprintf(nome_arquivo, "mapa%d.txt", num_mapa);
@@ -122,22 +113,17 @@ void imprimir_jogo() {
     limpar_tela();
     printf(AMARELO "=== PAC-MAN: TRABALHO DE CONSTRUÇÃO DE ALGORITMO. ===\n\n" RESET);
     
-    // Motor de Renderização (Decoupling de lógica e visual)
     for (int i = 0; i < m.linhas; i++) {
         for (int j = 0; j < m.colunas; j++) {
             char c = m.grade[i][j];
             
             if (c == '#') {
-                // Renderiza parede como um bloco sólido azul
                 printf(AZUL "█" RESET);
             } else if (c == '.') {
-                // Renderiza pontos
                 printf(BRANCO "." RESET);
             } else if (c == 'P') {
-                // Renderiza Pac-Man
                 printf(AMARELO "C" RESET);
             } else if (c == 'G') {
-                // Procura qual o ID deste fantasma especifico nesta coordenada
                 int id_fantasma = 0;
                 for (int k = 0; k < qtd_fantasmas; k++) {
                     if (fantasmas[k].pos.x == i && fantasmas[k].pos.y == j) {
@@ -146,16 +132,15 @@ void imprimir_jogo() {
                     }
                 }
                 
-                // Aplica a cor clássica baseada na IA do fantasma
-                if (id_fantasma == 0) printf(VERMELHO "M" RESET); // Blinky
-                else if (id_fantasma == 1) printf(MAGENTA "M" RESET);  // Pinky
-                else if (id_fantasma == 2) printf(CIANO "M" RESET);    // Inky
-                else printf(VERDE "M" RESET);                          // Clyde
+                if (id_fantasma == 0) printf(VERMELHO "M" RESET);
+                else if (id_fantasma == 1) printf(MAGENTA "M" RESET); 
+                else if (id_fantasma == 2) printf(CIANO "M" RESET);    
+                else printf(VERDE "M" RESET);                         
             } else {
-                printf(" "); // Espaço vazio
+                printf(" "); 
             }
         }
-        printf("\n"); // Quebra de linha da matriz
+        printf("\n"); 
     }
     
     printf(BRANCO "\nStatus da Missão:\n" RESET);
@@ -163,10 +148,6 @@ void imprimir_jogo() {
     printf(VERMELHO "-Pontos restantes: %d\n" RESET, m.pontos_totais - m.pontos_coletados);
     printf(BRANCO "\nControles: W (Cima), S (Baixo), A (Esquerda), D (Direita). Aperte 'Q' para Sair.\n" RESET);
 }
-
-// ============================================================================
-// LÓGICA E REGRAS DO JOGO
-// ============================================================================
 
 bool posicao_valida(int x, int y) {
     if (x < 0 || x >= m.linhas || y < 0 || y >= m.colunas) return false;
@@ -305,10 +286,6 @@ void checar_vitoria() {
         printf(VERDE "\n\nPARABÉNS! VOCÊ COLETOU TODOS OS PONTOS E VENCEU O JOGO!\n\n" RESET);
     }
 }
-
-// ============================================================================
-// MAIN - LOOP DE EXECUÇÃO
-// ============================================================================
 
 int main() {
     carregar_mapa();
